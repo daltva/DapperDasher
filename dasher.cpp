@@ -52,12 +52,18 @@ int main(int argc, char const *argv[])
     Texture2D nebula = LoadTexture("textures/12_nebula_spritesheet.png");
 
     //midground variable
-    Texture2D midground = LoadTexture("textures/backbuildings.png");
+    Texture2D midground = LoadTexture("textures/back-buildings.png");
     float mgX{};
 
     //foreground variable
     Texture2D foreground = LoadTexture("textures/foreground.png");
     float fgX{};
+
+    //far buildings variable
+    Texture2D background = LoadTexture("textures/far-buildings.png");
+    float bgX{0};
+
+    bool collision{};
 
     const int sizeOfNebulae{10};
     AnimData nebulae[sizeOfNebulae]{};
@@ -74,6 +80,8 @@ int main(int argc, char const *argv[])
         nebulae[i].updateTime = 1.0/16.0;
         nebulae[i].pos.x = windowDimensions[0] + i * 300;
     }
+
+    float finishLine{nebulae[sizeOfNebulae - 1].pos.x};
 
     //nebula x velocity (pixels/second)
     int nebVel{-200};
@@ -93,9 +101,6 @@ int main(int argc, char const *argv[])
 
     //velocity
     int velocity{0};
-
-    Texture2D background = LoadTexture("textures/far-buildings.png");
-    float bgX{0};
 
     //Set Target FPS
     SetTargetFPS(60);
@@ -174,6 +179,47 @@ int main(int argc, char const *argv[])
             nebulae[i].pos.x += nebVel * dT;
         }
 
+        //update finish line
+        finishLine += nebVel * dT;
+
+        for (AnimData nebula : nebulae)
+        {
+            float pad{50};
+            Rectangle nebRec{
+                nebula.pos.x + pad,
+                nebula.pos.y + pad,
+                nebula.rec.width - 2*pad,
+                nebula.rec.height - 2*pad
+            };
+            Rectangle scarfyRec{
+                scarfyData.pos.x,
+                scarfyData.pos.y,
+                scarfyData.rec.width,
+                scarfyData.rec.height
+            };
+            if (CheckCollisionRecs(nebRec, scarfyRec))
+            {
+                collision = true;
+            }
+        }
+
+        if (collision)
+        {
+            //lose the game
+        }
+        else
+        {
+                for (int i = 0; i < sizeOfNebulae; i++)
+        {
+            //draw nebula
+            DrawTextureRec(nebula, nebulae[i].rec, nebulae[i].pos, WHITE); 
+        }
+
+            // draw scarfy
+            DrawTextureRec(scarfy, scarfyData.rec, scarfyData.pos, WHITE);
+        }
+
+
         // update scarfy position
         scarfyData.pos.y += velocity * dT;
 
@@ -186,15 +232,6 @@ int main(int argc, char const *argv[])
         {
             nebulae[i] = updateAnimData(nebulae[i], dT, 7);
         }  
-
-        for (int i = 0; i < sizeOfNebulae; i++)
-        {
-           //draw nebula
-        DrawTextureRec(nebula, nebulae[i].rec, nebulae[i].pos, WHITE); 
-        }
-
-        // draw scarfy
-        DrawTextureRec(scarfy, scarfyData.rec, scarfyData.pos, WHITE);
 
         //Stop drawing
         EndDrawing();

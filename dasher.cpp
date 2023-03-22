@@ -86,6 +86,9 @@ int main(int argc, char const *argv[])
     //velocity
     int velocity{0};
 
+    Texture2D background = LoadTexture("textures/far-buildings.png");
+    float bgX{0};
+
     //Set Target FPS
     SetTargetFPS(60);
 
@@ -101,6 +104,12 @@ int main(int argc, char const *argv[])
         //Begin drawing
         BeginDrawing();
         ClearBackground(WHITE);
+
+        bgX -= 20 * dT;
+
+        //draw background
+        Vector2 bgPos{bgX, 0.0};
+        DrawTextureEx(background, bgPos, 0.0, 2.0, WHITE);
         
         //ground check
         if (isOnGround(scarfyData, windowDimensions[1]))
@@ -155,5 +164,6 @@ int main(int argc, char const *argv[])
         
     UnloadTexture(scarfy);
     UnloadTexture(nebula);
+    UnloadTexture(background);
     CloseWindow();
 }

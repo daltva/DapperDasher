@@ -51,6 +51,14 @@ int main(int argc, char const *argv[])
     //nebula variables
     Texture2D nebula = LoadTexture("textures/12_nebula_spritesheet.png");
 
+    //midground variable
+    Texture2D midground = LoadTexture("textures/backbuildings.png");
+    float mgX{};
+
+    //foreground variable
+    Texture2D foreground = LoadTexture("textures/foreground.png");
+    float fgX{};
+
     const int sizeOfNebulae{10};
     AnimData nebulae[sizeOfNebulae]{};
 
@@ -106,10 +114,40 @@ int main(int argc, char const *argv[])
         ClearBackground(WHITE);
 
         bgX -= 20 * dT;
+        if (bgX <= -background.width*2)
+        {
+            bgX = 0.0;
+        }
+
+        mgX -= 40 * dT;
+        if (mgX <= -midground.width*2)
+        {
+            mgX = 0.0;
+        }
+
+        fgX -= 80 * dT;
+        if (fgX <= -foreground.width*2)
+        {
+            fgX = 0.0;
+        }
 
         //draw background
-        Vector2 bgPos{bgX, 0.0};
-        DrawTextureEx(background, bgPos, 0.0, 2.0, WHITE);
+        Vector2 bg1Pos{bgX, 0.0};
+        DrawTextureEx(background, bg1Pos, 0.0, 2.0, WHITE);
+        Vector2 bg2Pos{bgX + background.width*2, 0.0};
+        DrawTextureEx(background, bg2Pos, 0.0, 2.0, WHITE);
+
+        //draw midground
+        Vector2 mg1Pos{mgX, 0.0};
+        DrawTextureEx(midground, mg1Pos, 0.0, 2.0, WHITE);
+        Vector2 mg2Pos{mgX + midground.width*2, 0.0};
+        DrawTextureEx(midground, mg2Pos, 0.0, 2.0, WHITE);
+
+        //draw foreground
+        Vector2 fg1Pos{fgX, 0.0};
+        DrawTextureEx(foreground, fg1Pos, 0.0, 2.0, WHITE);
+        Vector2 fg2Pos{fgX + foreground.width*2, 0.0};
+        DrawTextureEx(foreground, fg2Pos, 0.0, 2.0, WHITE);
         
         //ground check
         if (isOnGround(scarfyData, windowDimensions[1]))
@@ -165,5 +203,7 @@ int main(int argc, char const *argv[])
     UnloadTexture(scarfy);
     UnloadTexture(nebula);
     UnloadTexture(background);
+    UnloadTexture(foreground);
+    UnloadTexture(midground);
     CloseWindow();
 }

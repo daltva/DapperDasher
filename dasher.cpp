@@ -206,7 +206,14 @@ int main(int argc, char const *argv[])
         if (collision)
         {
             //lose the game
+            DrawText("Game Over!", windowDimensions[0]/4, windowDimensions[1]/2, 40, RED);
         }
+        else if (scarfyData.pos.x >= finishLine)
+        {
+            //win the game
+            DrawText("You Win!", windowDimensions[0]/4, windowDimensions[1]/2, 40, RED);
+        }
+        
         else
         {
                 for (int i = 0; i < sizeOfNebulae; i++)
